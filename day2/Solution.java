@@ -104,7 +104,7 @@ class Solution {
     return true;
   }
 
-  void main(String[] args) {
+  void main() {
     int validationResultPart1 = part1("test_input.txt");
     System.out.println(validationResultPart1);
     System.out.println(validationResultPart1 == 2);

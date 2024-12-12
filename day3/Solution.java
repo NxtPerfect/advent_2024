@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class Solution {
-  void main(String[] args) {
+  void main() {
     int properResultPart1 = 161;
     int validationResultPart1 = part1("test_input.txt");
     System.out.println(validationResultPart1);

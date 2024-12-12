@@ -79,7 +79,7 @@ class Solution {
         .toArray();
   }
 
-  void main(String[] args) {
+  void main() {
     int properResultPart1 = 18; // TODO: change to part 1 sample data result
     int validationResultPart1 = part1("test_input.txt");
     System.out.println(validationResultPart1);

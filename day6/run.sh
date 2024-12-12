@@ -1,2 +1,2 @@
 javac --enable-preview --source 23 -d . Solution.java
-java --enable-preview day5/Solution
+java --enable-preview day6/Solution

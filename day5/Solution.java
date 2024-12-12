@@ -8,7 +8,7 @@ import lib.Tests;
 import lib.AoC;
 
 class Solution {
-  void main(String[] args) {
+  void main() {
     int properResultPart1 = 0; // TODO: change to part 1 sample data result
     int validationResultPart1 = part1("test_input.txt");
     System.out.println(validationResultPart1);
@@ -27,7 +27,8 @@ class Solution {
     int resultPart2 = part2("input.txt");
     System.out.println(resultPart2);
   }
-  static Integer part1(String inputFilePath) {
+
+  static int part1(String inputFilePath) {
     int result = 0;
 
     try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
@@ -44,7 +45,7 @@ class Solution {
     return result;
   }
 
-  static Integer part2(String inputFilePath) {
+  static int part2(String inputFilePath) {
     int result = 0;
 
     return result;
