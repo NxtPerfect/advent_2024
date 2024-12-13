@@ -1,2 +1,2 @@
-javac --enable-preview --source 23 ./*.java
-# java --enable-preview Lib.class
+javac --enable-preview --source 23 -d . lib/*.java
+java --enable-preview lib.Day

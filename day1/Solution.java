@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Arrays;
 
-import lib.Tests;
-import lib.AoC;
-
+// import lib.Tests;
+// import lib.AoC;
+//
 class Solution {
   void main() {
     int properResultPart1 = 0; // TODO: change to part 1 sample data result
@@ -16,8 +16,6 @@ class Solution {
 
     int resultPart1 = part1("input.txt");
     System.out.println(resultPart1);
-
-
 
     int properResultPart2 = 0; // TODO: change to part 2 sample data result
     int validationResultPart2 = part2("test_input.txt");

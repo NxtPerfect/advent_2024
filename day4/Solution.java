@@ -4,98 +4,160 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-class Solution {
+import lib.Day;
 
-  // Try representing the input in 1d array
-  // take a note of line length
+class Solution extends Day {
+
+  // Starting from top, going counterclockwise
+  int[][] directions = { { -1, 0 }, { -1, -1 }, { 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 1 } };
+  String[] XMASletters = { "M", "A", "S" };
+  String[] X_MASletters = { "M", "S" };
+
   int part1(String inputFilePath) {
     int result = 0;
-    ArrayList<String> input1D = new ArrayList<String>();
+    List<List<String>> input2D = new ArrayList<List<String>>();
     int inputLength = 0;
 
     try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
       String line = br.readLine();
       inputLength = line.length();
+      int i = 0;
 
       while (line != null) {
-        input1D.add(line.strip());
+        input2D.add(new ArrayList<String>());
+        String[] splitLineByChar = line.strip().split("(?<=.)");
+        for (String letter : splitLineByChar) {
+          input2D.get(i).add(letter);
+        }
+        i++;
         line = br.readLine();
       }
     } catch (Exception e) {
       System.out.println(e);
     }
 
-    // now how to handle the array?
-    // for left -- index - 1 - string.contains(XMAS)
-    // right -- index + 1 - string.contains(SMAX)
-    // top -- index + length - string += string[i+(length*j)]
-    // bottom -- index - length - string += string[i-(length*j)]
-    // diagonal left top to right -- index - length + j - string +=
-    // string[i-length+j]
-    // diagonal right top to left -- index - length - j - string +=
-    // string[i-length-j]
+    for (int i = 0; i < input2D.size(); i++) {
+      List<String> line = input2D.get(i);
+      int firstXIndex = line.indexOf("X");
+      if (firstXIndex == -1) {
+        continue;
+      }
+      List<Integer> xIndexes = new ArrayList<Integer>();
+      for (int j = firstXIndex; j < input2D.get(i).size(); j++) {
+        if (line.get(j).equals("X"))
+          xIndexes.add(j);
+      }
 
-    String[] input1DArray = new String[input1D.size()];
-    input1DArray = input1D.toArray(input1DArray);
-    String input = String.join("", input1DArray);
-    System.out.println(input);
+      for (Integer index : xIndexes) {
+        boolean isValid = true;
+        for (int j = 0; j < directions.length; j++) {
+          int row = directions[j][0];
+          int col = directions[j][1];
 
-    // Find in string "X" and look in all 8 directions
-    // alternatively, remove strings in directions we don't care about,
-    // and check if they end up as XMAS or SMAX
-    // but both need "X" to be found
+          for (int k = 0; k < XMASletters.length; k++) {
+            int dirRow = row * (k + 1);
+            int dirCol = col * (k + 1);
+            if ((i + dirRow) < 0 || (i + dirRow) >= input2D.size() || (index + dirCol) < 0
+                || (index + dirCol) >= input2D.get(i + dirRow).size()) {
+              isValid = false;
+              break;
+            }
 
-    // for (String line : input1DArray) {
-    // result += countSubstringOccurance(input1DArray, "XMAS");
-    // result += countSubstringOccurance(input1DArray, "SMAX");
-    // }
-    return result;
-  }
-
-  int countSubstringOccurance(String str, String pattern) {
-    int occurances = 0;
-    int lastIndex = 0;
-    while (lastIndex != -1) {
-      lastIndex = str.indexOf(pattern, lastIndex);
-
-      if (lastIndex != -1) {
-        occurances++;
-        lastIndex += pattern.length();
+            if (input2D.get(i + dirRow).get(index + dirCol).equals(XMASletters[k])) {
+              isValid = true;
+              continue;
+            }
+            isValid = false;
+            break;
+          }
+          result += isValid ? 1 : 0;
+        }
       }
     }
-    return occurances;
+    return result;
   }
 
   int part2(String inputFilePath) {
     int result = 0;
+    List<List<String>> input2D = new ArrayList<List<String>>();
+    int inputLength = 0;
 
+    try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+      String line = br.readLine();
+      inputLength = line.length();
+      int i = 0;
+
+      while (line != null) {
+        input2D.add(new ArrayList<String>());
+        String[] splitLineByChar = line.strip().split("(?<=.)");
+        for (String letter : splitLineByChar) {
+          input2D.get(i).add(letter);
+        }
+        i++;
+        line = br.readLine();
+      }
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+
+    for (int i = 0; i < input2D.size(); i++) {
+      List<String> line = input2D.get(i);
+      int firstAIndex = line.indexOf("A");
+      if (firstAIndex == -1) {
+        continue;
+      }
+      List<Integer> aIndexes = new ArrayList<Integer>();
+      for (int j = firstAIndex; j < input2D.get(i).size(); j++) {
+        if (line.get(j).equals("A"))
+          aIndexes.add(j);
+      }
+
+      for (Integer index : aIndexes) {
+        boolean isValid = true;
+        for (int j = 0; j < directions.length; j++) {
+          int row = directions[j][0];
+          int col = directions[j][1];
+
+          for (int k = 0; k < X_MASletters.length; k++) {
+            int dirRow = row * (k + 1);
+            int dirCol = col * (k + 1);
+            if ((i + dirRow) < 0 || (i + dirRow) >= input2D.size() || (index + dirCol) < 0
+                || (index + dirCol) >= input2D.get(i + dirRow).size()) {
+              isValid = false;
+              break;
+            }
+
+            if (input2D.get(i + dirRow).get(index + dirCol).equals(X_MASletters[k])) {
+              isValid = true;
+              continue;
+            }
+            isValid = false;
+            break;
+          }
+          result += isValid ? 1 : 0;
+        }
+      }
+    }
     return result;
   }
 
-  private static int[] readFileLineToArray(String line) {
-    return Arrays.stream(line.split("\\s+"))
-        .mapToInt(Integer::parseInt) // TODO: Change if needing string
-        .toArray();
-  }
-
   void main() {
-    int properResultPart1 = 18; // TODO: change to part 1 sample data result
-    int validationResultPart1 = part1("test_input.txt");
+    int properResultPart1 = 18;
+    int validationResultPart1 = part1("day4/test_input.txt");
     System.out.println(validationResultPart1);
     System.out.println(validationResultPart1 == properResultPart1);
 
-    int resultPart1 = part1("input.txt");
+    int resultPart1 = part1("day4/input.txt");
     System.out.println(resultPart1);
-    //
-    //
-    //
-    // int properResultPart2 = 0; // TODO: change to part 2 sample data result
-    // int validationResultPart2 = part2("test_input.txt");
-    // System.out.println(validationResultPart2);
-    // System.out.println(validationResultPart2 == properResultPart2);
-    //
-    // int resultPart2 = part2("input.txt");
+
+    int properResultPart2 = 9;
+    int validationResultPart2 = part2("day4/test_input.txt");
+    System.out.println(validationResultPart2);
+    System.out.println(validationResultPart2 == properResultPart2);
+
+    // int resultPart2 = part2("day4/input.txt");
     // System.out.println(resultPart2);
   }
 

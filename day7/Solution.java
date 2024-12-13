@@ -10,19 +10,19 @@ import java.util.Arrays;
 class Solution {
   void main() {
     int properResultPart1 = 3749;
-    Long validationResultPart1 = part1("test_input.txt");
+    Long validationResultPart1 = part1("day7/test_input.txt");
     System.out.println(validationResultPart1);
     System.out.println(validationResultPart1 == properResultPart1);
 
-    Long resultPart1 = part1("input.txt");
+    Long resultPart1 = part1("day7/input.txt");
     System.out.println(resultPart1);
 
     int properResultPart2 = 11387;
-    Long validationResultPart2 = part2("test_input.txt");
+    Long validationResultPart2 = part2("day7/test_input.txt");
     System.out.println(validationResultPart2);
     System.out.println(validationResultPart2 == properResultPart2);
 
-    Long resultPart2 = part2("input.txt");
+    Long resultPart2 = part2("day7/input.txt");
     System.out.println(resultPart2);
   }
 
