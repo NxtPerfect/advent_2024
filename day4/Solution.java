@@ -79,6 +79,8 @@ class Solution extends Day {
     return result;
   }
 
+  // Check top of A if it has "MS" and "SM" at the bottom
+  // or "SM" and "MS"
   int part2(String inputFilePath) {
     int result = 0;
     List<List<String>> input2D = new ArrayList<List<String>>();
@@ -115,32 +117,66 @@ class Solution extends Day {
       }
 
       for (Integer index : aIndexes) {
-        boolean isValid = true;
-        for (int j = 0; j < directions.length; j++) {
-          int row = directions[j][0];
-          int col = directions[j][1];
+        int leftCol = index - 1;
+        int rightCol = index + 1;
+        int topRow = i - 1;
+        int bottomRow = i + 1;
 
-          for (int k = 0; k < X_MASletters.length; k++) {
-            int dirRow = row * (k + 1);
-            int dirCol = col * (k + 1);
-            if ((i + dirRow) < 0 || (i + dirRow) >= input2D.size() || (index + dirCol) < 0
-                || (index + dirCol) >= input2D.get(i + dirRow).size()) {
-              isValid = false;
-              break;
-            }
+        if (topRow >= input2D.size() || bottomRow >= input2D.size()
+            || topRow < 0 || bottomRow < 0) {
+          // System.out.println("Skipped out of bounds for row " + i + " " + index + " " +
+          // topRow + " " + bottomRow);
+          continue;
+        }
 
-            if (input2D.get(i + dirRow).get(index + dirCol).equals(X_MASletters[k])) {
-              isValid = true;
-              continue;
-            }
-            isValid = false;
-            break;
-          }
-          result += isValid ? 1 : 0;
+        if (leftCol < 0 || rightCol >= input2D.get(topRow).size()) {
+          // System.out.println("Skipped out of bounds cols " + i + " " + index);
+          continue;
+        }
+
+        if ((input2D.get(topRow).get(leftCol).equals(X_MASletters[0])
+            && input2D.get(topRow).get(rightCol).equals(X_MASletters[1]))
+            &&
+            (input2D.get(bottomRow).get(leftCol).equals(X_MASletters[0])
+                && input2D.get(bottomRow).get(rightCol).equals(X_MASletters[1]))) {
+          // System.out.println(i + " " + index);
+          result++;
+          continue;
+        }
+
+        if ((input2D.get(topRow).get(leftCol).equals(X_MASletters[0])
+            && input2D.get(topRow).get(rightCol).equals(X_MASletters[0]))
+            &&
+            (input2D.get(bottomRow).get(leftCol).equals(X_MASletters[1])
+                && input2D.get(bottomRow).get(rightCol).equals(X_MASletters[1]))) {
+          // System.out.println(i + " " + index);
+          result++;
+          continue;
+        }
+
+        if ((input2D.get(topRow).get(leftCol).equals(X_MASletters[1])
+            && input2D.get(topRow).get(rightCol).equals(X_MASletters[0]))
+            &&
+            (input2D.get(bottomRow).get(leftCol).equals(X_MASletters[1])
+                && input2D.get(bottomRow).get(rightCol).equals(X_MASletters[0]))) {
+          // System.out.println(i + " " + index);
+          result++;
+          continue;
+        }
+
+        if ((input2D.get(topRow).get(leftCol).equals(X_MASletters[1])
+            && input2D.get(topRow).get(rightCol).equals(X_MASletters[1]))
+            &&
+            (input2D.get(bottomRow).get(leftCol).equals(X_MASletters[0])
+                && input2D.get(bottomRow).get(rightCol).equals(X_MASletters[0]))) {
+          // System.out.println(i + " " + index);
+          result++;
+          continue;
         }
       }
     }
     return result;
+
   }
 
   void main() {
@@ -157,8 +193,8 @@ class Solution extends Day {
     System.out.println(validationResultPart2);
     System.out.println(validationResultPart2 == properResultPart2);
 
-    // int resultPart2 = part2("day4/input.txt");
-    // System.out.println(resultPart2);
+    int resultPart2 = part2("day4/input.txt");
+    System.out.println(resultPart2);
   }
 
 }
