@@ -11,6 +11,7 @@ import lib.AoC;
 
 public class Solution {
   void main() {
+    System.out.println("Part 1:");
     int properResultPart1 = 143;
     int validationResultPart1 = part1("day5/test_input.txt");
     System.out.println(validationResultPart1);
@@ -19,13 +20,16 @@ public class Solution {
     int resultPart1 = part1("day5/input.txt");
     System.out.println(resultPart1);
 
+    System.out.println("\nPart 2:");
+
     int properResultPart2 = 123;
     int validationResultPart2 = part2("day5/test_input.txt");
     System.out.println(validationResultPart2);
     System.out.println(validationResultPart2 == properResultPart2);
-    //
-    // int resultPart2 = part2("day5/input.txt");
-    // System.out.println(resultPart2);
+
+    int resultPart2 = part2("day5/input.txt");
+    System.out.println(resultPart2);
+    System.out.println(resultPart2 > 711);
   }
 
   /*
@@ -126,8 +130,11 @@ public class Solution {
         }
 
         int[] updateNumbersInLine = splitUpdateLineToIntArray(line);
-        ArrayList<Integer> swappedValues = new ArrayList<Integer>();
-        boolean isValidLine = true;
+        // Perhaps this should be a hash map too?
+        // to keep track which two values were swapped with eachother
+        // because if they weren't, then it's valid to swap them
+        HashMap<Integer, ArrayList<Integer>> swappedValues = new HashMap<Integer, ArrayList<Integer>>();
+        boolean isValidLine = false;
         for (int i = (updateNumbersInLine.length - 1); i > 0; i--) {
           for (int j = 0; j < i; j++) {
             if (rulesNumbers.get(updateNumbersInLine[i]) == null)
@@ -135,11 +142,19 @@ public class Solution {
             // Now if we get into this situation, maybe we could swap the values
             // and check again if they're valid starting from the back?
             if (rulesNumbers.get(updateNumbersInLine[i]).contains(updateNumbersInLine[j])
-                && !swappedValues.contains(updateNumbersInLine[j])) {
+                && (swappedValues.get(updateNumbersInLine[i]) == null
+                    || !swappedValues.get(updateNumbersInLine[i]).contains(updateNumbersInLine[i]))) {
+              if (swappedValues.get(updateNumbersInLine[i]) == null)
+                swappedValues.put(updateNumbersInLine[i],
+                    new ArrayList<Integer>(Arrays.asList(updateNumbersInLine[j])));
+              else {
+                ArrayList<Integer> newSwappedHashmapValue = swappedValues.get(updateNumbersInLine[i]);
+                newSwappedHashmapValue.add(updateNumbersInLine[j]);
+                swappedValues.put(updateNumbersInLine[i], newSwappedHashmapValue);
+              }
               int temp = updateNumbersInLine[i];
               updateNumbersInLine[i] = updateNumbersInLine[j];
               updateNumbersInLine[j] = temp;
-              swappedValues.add(updateNumbersInLine[j]);
               i = (updateNumbersInLine.length);
               isValidLine = true;
               break;
