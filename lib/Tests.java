@@ -6,47 +6,47 @@ package lib;
  */
 public class Tests {
 
-  public static <T extends Comparable<T>> void assertTrue (T actualResult, T expectedResult) throws AssertionFailedException {
+  public static final <T extends Comparable<T>> void assertTrue(final T actualResult, final T expectedResult) {
     try {
       if (actualResult != expectedResult) {
         throw new AssertionFailedException(actualResult + " not equal to " + expectedResult);
       }
       return;
-    } catch (AssertionFailedException e) {
-      System.out.println("Test failed" + actualResult + " not equal to " + actualResult);
+    } catch (final AssertionFailedException e) {
+      System.err.println("Test failed" + actualResult + " not equal to " + actualResult);
     }
   }
 
-  public static void assertTrue (String actualResult, String expectedResult) throws AssertionFailedException {
+  public static final void assertTrue(final String actualResult, final String expectedResult) {
     try {
       if (actualResult.equals(expectedResult)) {
         throw new AssertionFailedException(actualResult + " not equal to " + expectedResult);
       }
       return;
-    } catch (AssertionFailedException e) {
-      System.out.println("Test failed" + actualResult + " not equal to " + actualResult);
+    } catch (final AssertionFailedException e) {
+      System.err.println("Test failed" + actualResult + " not equal to " + actualResult);
     }
   }
 
-  public static <T extends Comparable<T>> void assertNotTrue (T actualResult, T expectedResult)  throws AssertionFailedException {
+  public static final <T extends Comparable<T>> void assertNotTrue(final T actualResult, final T expectedResult) {
     try {
       if (actualResult != expectedResult) {
         throw new AssertionFailedException(actualResult + " not equal to " + expectedResult);
       }
       return;
-    } catch (AssertionFailedException e) {
-      System.out.println("Test failed" + actualResult + " not equal to " + actualResult);
+    } catch (final AssertionFailedException e) {
+      System.err.println("Test failed" + actualResult + " not equal to " + actualResult);
     }
   }
 
-  public static void assertNotTrue (String actualResult, String expectedResult) throws AssertionFailedException {
+  public static final void assertNotTrue(final String actualResult, final String expectedResult) {
     try {
       if (!actualResult.equals(expectedResult)) {
         throw new AssertionFailedException(actualResult + " not equal to " + expectedResult);
       }
       return;
-    } catch (AssertionFailedException e) {
-      System.out.println("Test failed" + actualResult + " not equal to " + actualResult);
+    } catch (final AssertionFailedException e) {
+      System.err.println("Test failed" + actualResult + " not equal to " + actualResult);
     }
   }
 
