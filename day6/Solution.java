@@ -47,24 +47,25 @@ class Solution {
     return map;
   }
 
-  static final HashMap<Integer, ArrayList<Integer>> insertIntoHashMapOrAppendIfExists(
-      HashMap<Integer, ArrayList<Integer>> map,
-      int key,
-      int[] val) {
-    if (map.get(key) != null) {
-      ArrayList<Integer> existingValues = map.get(key);
-      for (int v : val) {
-        existingValues.add(v);
-      }
-      map.put(key, existingValues);
-      // append
-      return map;
-    }
-    ArrayList<Integer> newValues = new ArrayList<Integer>(Arrays.asList(val));
-    map.put(key, new ArrayList<Integer>(Arrays.asList(val)));
-    return map;
-  }
-
+  // static final HashMap<Integer, ArrayList<Integer>>
+  // insertIntoHashMapOrAppendIfExists(
+  // HashMap<Integer, ArrayList<Integer>> map,
+  // int key,
+  // int[] val) {
+  // if (map.get(key) != null) {
+  // ArrayList<Integer> existingValues = map.get(key);
+  // for (int v : val) {
+  // existingValues.add(v);
+  // }
+  // map.put(key, existingValues);
+  // // append
+  // return map;
+  // }
+  // ArrayList<Integer> newValues = new ArrayList<Integer>(Arrays.asList(val));
+  // map.put(key, new ArrayList<Integer>(Arrays.asList(val)));
+  // return map;
+  // }
+  //
   // when we go up, then we add to result our y pos
   // and substitute by the position of next obstacle in y
   // if we go right, then (current x pos - x pos of next element - 1)
@@ -110,18 +111,6 @@ class Solution {
     // X as key, Y as value
     HashMap<Integer, ArrayList<Integer>> visited = new HashMap<Integer, ArrayList<Integer>>();
 
-    // I can either get obstacle indexes into two arrays
-    // one for y, one for x
-    // where indexesY[0] is paired with indexesX[0]
-    // this means i can find index in x, if i'm going
-    // and check what's the y obstacle of that element
-    // and quickly add to result, and move right
-    //
-    // Or if i want to use hashmaps, i'm thinking of also using two
-    // one per each dimension
-    // there i'd store all X indexes for y index,
-    // and the other way around for the next hashmap
-    //
     // from hashmap get indexes of obstacles in path
     // then check it's position - cur position on axis
     // if value is < 0, then continue
@@ -192,16 +181,31 @@ class Solution {
 
       // add all the indexes to visited hashmap
       // between player and obstacle
+      //
+      // What if indexOfClosestObstacle is MAX_VALUE, as we found none?
       if (isTopGoing) {
-        visited = insertIntoHashMapOrAppendIfExists(visited, playerX,
-            IntStream.rangeClosed(playerY, indexOfClosestObstacle).toArray());
+        System.out.println(playerY + " " + indexOfClosestObstacle);
+        int[] closedRange = new int[] {};
+        if (indexOfClosestObstacle != Integer.MAX_VALUE)
+          closedRange = IntStream.rangeClosed(indexOfClosestObstacle, playerY).toArray();
+        else
+          closedRange = IntStream.rangeClosed(0, playerY).toArray();
+        for (Integer y : closedRange) {
+          visited = insertIntoHashMapOrAppendIfExists(visited, playerX, y);
+        }
         directionIndex++;
         playerY = indexOfClosestObstacle - 1;
         continue;
       }
       if (isBottomGoing) {
-        visited = insertIntoHashMapOrAppendIfExists(visited, playerX,
-            IntStream.rangeClosed(indexOfClosestObstacle, playerY).toArray());
+        int[] closedRange = new int[] {};
+        if (indexOfClosestObstacle != Integer.MAX_VALUE)
+          closedRange = IntStream.rangeClosed(playerY, indexOfClosestObstacle).toArray();
+        else
+          closedRange = IntStream.rangeClosed(playerY, map.size() - 1).toArray();
+        for (Integer x : closedRange) {
+          visited = insertIntoHashMapOrAppendIfExists(visited, playerX, x);
+        }
         directionIndex++;
         playerY = indexOfClosestObstacle + 1;
         continue;
@@ -239,7 +243,7 @@ class Solution {
     // add last path to result
     // return
 
-    return result;
+    return visited.size();
   }
 
   static int part2(String inputFilePath) {
