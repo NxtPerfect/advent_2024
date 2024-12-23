@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import lib.Tests;
 import lib.AoC;
@@ -51,24 +52,6 @@ class Solution extends Day {
       mapWidth = line.length();
 
       while (line != null) {
-        // Find all the antenas
-        // add them to "antenas"
-        // if key exists, add to list of values
-        // else create new entry
-        //
-        // Antena is any digit/number
-        // so ignore "."
-        // save everything else
-        //
-        // TODO: Y difference of antenas
-        // should be ABS
-        // but x difference doesn't need to be
-        // as long as we keep the corners
-        //
-        // so actually, think about how to
-        // keep correct orientation of antenas
-        // maybe check if the first one is above
-        // then it's legit?
         for (int i = 0; i < line.length(); i++) {
           String node = String.valueOf(line.charAt(i));
           if (node.equals("."))
@@ -96,50 +79,74 @@ class Solution extends Day {
 
     // TODO: store already added new antenas
     // hash map of int[]?
-    HashSet<Integer[]> createdAntenas = new HashSet<>();
+    HashSet<List<Integer>> createdAntenas = new HashSet<>();
     for (String antenaKey : antenas.keySet()) {
       for (Integer[] coordinates : antenas.get(antenaKey)) {
         System.out.println(coordinates[0] + " " + coordinates[1]);
         for (Integer[] otherCoordinates : antenas.get(antenaKey)) {
           if (otherCoordinates[0].equals(coordinates[0]) && otherCoordinates[1].equals(coordinates[1]))
             continue;
-          // boolean isFirstAntenaAbove = otherCoordinates[1] > coordinates[1];
+          boolean isFirstAntenaAbove = otherCoordinates[1] > coordinates[1];
           int x_diff = otherCoordinates[0] - coordinates[0];
-          int y_diff = Math.abs(otherCoordinates[1] - coordinates[1]);
+          int y_diff = isFirstAntenaAbove ? otherCoordinates[1] - coordinates[1] : coordinates[1] - otherCoordinates[1];
 
-          // TODO: we never check if coordinates is above otherCoordinates
-          // we possibly create antenas inside them, not outside
           int newCoordinateX = coordinates[0] - x_diff;
           int newCoordinateY = coordinates[1] - y_diff;
           int newOtherCoordinateX = otherCoordinates[0] + x_diff;
           int newOtherCoordinateY = otherCoordinates[1] + y_diff;
+          if (!isFirstAntenaAbove) {
+            int temp = newCoordinateX;
+            newCoordinateX = newOtherCoordinateX;
+            newOtherCoordinateX = temp;
 
-          // TODO: if one out of bounds
-          // then add other one
+            temp = newCoordinateY;
+            newCoordinateY = newOtherCoordinateY;
+            newOtherCoordinateY = temp;
+          }
+
+          List<Integer> coords = List.of((Integer) newCoordinateX, (Integer) newCoordinateY);
+          List<Integer> otherCoords = List.of((Integer) newOtherCoordinateX, (Integer) newOtherCoordinateY);
+
           if (newCoordinateX < 0
               || newCoordinateY < 0
-              || newOtherCoordinateX > mapWidth
-              || newOtherCoordinateY > mapHeight)
+                  && (newOtherCoordinateX < mapWidth
+                      && newOtherCoordinateY < mapHeight)) {
+            duplicateSafeAddNewAntenas(createdAntenas, otherCoords);
             continue;
+          }
 
-          if (createdAntenas.contains(new Integer[] { newCoordinateX, newCoordinateY })
-              && createdAntenas.contains(new Integer[] { newOtherCoordinateX, newOtherCoordinateY }))
-            continue;
-          if (createdAntenas.contains(new Integer[] { newCoordinateX, newCoordinateY })) {
-            createdAntenas.add(new Integer[] { newOtherCoordinateX, newOtherCoordinateY });
-            continue;
-          }
-          if (createdAntenas.contains(new Integer[] { newOtherCoordinateX, newOtherCoordinateY })) {
-            createdAntenas.add(new Integer[] { newCoordinateX, newCoordinateY });
+          if (newCoordinateX >= 0
+              || newCoordinateY >= 0
+                  && (newOtherCoordinateX >= mapWidth
+                      || newOtherCoordinateY >= mapHeight)) {
+            duplicateSafeAddNewAntenas(createdAntenas, coords);
             continue;
           }
-          createdAntenas.add(new Integer[] { newCoordinateX, newCoordinateY });
-          createdAntenas.add(new Integer[] { newOtherCoordinateX, newOtherCoordinateY });
+
+          if (newCoordinateX >= 0
+              || newCoordinateY >= 0
+              || newOtherCoordinateX >= mapWidth
+              || newOtherCoordinateY >= mapHeight) {
+            continue;
+          }
+
+          duplicateSafeAddNewAntenas(createdAntenas, coords);
+          duplicateSafeAddNewAntenas(createdAntenas, otherCoords);
         }
       }
     }
+
+    for (List<Integer> cAntenas : createdAntenas) {
+      System.out.println(cAntenas.get(0).toString() + ", " + cAntenas.get(1).toString());
+    }
     return createdAntenas.size();
 
+  }
+
+  private void duplicateSafeAddNewAntenas(HashSet<List<Integer>> createdAntenas, List<Integer> newCords) {
+    if (createdAntenas.contains(newCords))
+      return;
+    createdAntenas.add(newCords);
   }
 
   int part2(String inputFilePath) {
