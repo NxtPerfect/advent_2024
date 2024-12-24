@@ -139,7 +139,7 @@ class Solution extends Day {
     for (List<Integer> cAntenas : createdAntenas) {
       System.out.println(cAntenas.get(0).toString() + ", " + cAntenas.get(1).toString());
     }
-    return createdAntenas.size();
+    return createdAntenas.size(); // 6,2; 10,4 -> 9,4; 9,3;
 
   }
 
