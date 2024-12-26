@@ -1,5 +1,9 @@
 package lib;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * AoC
  * Fetch today's problem
@@ -48,5 +52,24 @@ public class AoC {
     // TODO: submit number, get true/false if passed
     // if false show if too little or too much
     return true;
+  }
+
+  static <T> void swapInPlace(T a, T b) {
+    T temp = a;
+    a = b;
+    b = a;
+  }
+
+  static <T extends List<E>, E> void insertWithoutDuplicate(T list, E item) {
+    if (list.contains(item))
+      return;
+    list.add(item);
+  }
+
+  static <T extends Map<K, List<E>>, K, E> void insertWithoutDuplicate(T map, K key, E value) {
+    if (map.containsKey(key) && map.get(key).contains(value))
+      return;
+    List<E> l = new ArrayList<>(List.of(value));
+    map.put(key, l);
   }
 }

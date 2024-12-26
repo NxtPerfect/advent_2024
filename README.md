@@ -15,4 +15,5 @@ Java 23
 | 5 | Yes | Yes |
 | 6 | No | No |
 | 7 | Yes | Yes |
-| 8 | - | - |
+| 8 | No | No |
+| 9 | No | No |
