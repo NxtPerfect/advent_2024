@@ -13,25 +13,24 @@ import lib.Day;
 
 class Solution extends Day {
   void main() {
-    int properResultPart1 = 1928;
-    Long validationResultPart1 = part1("day9/test_input.txt");
-    System.out.println(validationResultPart1);
-    System.out.println(validationResultPart1 == properResultPart1);
-
-    Long resultPart1 = part1("day9/input.txt");
-    System.out.println(resultPart1);
-    System.out.println(resultPart1 > 92697854996l);
-
-    // int properResultPart2 = 0; // TODO: change to part 2 sample data result
-    // int validationResultPart2 = part2("day9/test_input.txt");
-    // System.out.println(validationResultPart2);
-    // System.out.println(validationResultPart2 == properResultPart2);
+    // int properResultPart1 = 1928;
+    // Long validationResultPart1 = part1("day9/test_input.txt");
+    // System.out.println(validationResultPart1);
+    // System.out.println(validationResultPart1 == properResultPart1);
     //
-    // int resultPart2 = part2("day9/input.txt");
+    // Long resultPart1 = part1("day9/input.txt");
+    // System.out.println(resultPart1);
+    //
+    int properResultPart2 = 2858;
+    Long validationResultPart2 = part2("day9/test_input.txt");
+    System.out.println(validationResultPart2);
+    System.out.println(validationResultPart2 == properResultPart2);
+
+    // Long resultPart2 = part2("day9/input.txt");
     // System.out.println(resultPart2);
   }
 
-  long part1(String inputFilePath) {
+  Long part1(String inputFilePath) {
     Long howManyTimes = 0l;
     List<String> input = new ArrayList<>();
 
@@ -60,9 +59,6 @@ class Solution extends Day {
       System.out.println(e);
     }
 
-    // System.out.println(input.toString());
-
-    // Find "." and replace with end
     int start = 0;
     int end = input.size() - 1;
     while (start < end) {
@@ -79,10 +75,6 @@ class Solution extends Day {
       end--;
     }
 
-    // System.out.println(input.toString());
-
-    // remove elements from start -> input.size()
-    // because they're all '.'
     start++;
     try {
       while (input.get(start) != null) {
@@ -111,9 +103,77 @@ class Solution extends Day {
     return result;
   }
 
-  int part2(String inputFilePath) {
-    int result = 0;
+  // Move the values from right to left
+  // to the first slot they fit as a whole
+  // only move them to the left
+  Long part2(String inputFilePath) {
+    Integer howManyTimes = 0;
+    List<String> input = new ArrayList<>();
+    List<List<Integer>> chunks = new ArrayList<>();
 
-    return result;
+    try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+      String line = br.readLine().trim();
+      Integer id = 0;
+
+      while (line != null) {
+        for (int i = 0; i < line.length(); i++) {
+          if (i % 2 == 0) {
+            howManyTimes = Integer.parseInt(Character.toString(line.charAt(i)));
+
+            // adds chunk id, index, length
+            chunks.add(new ArrayList<>(List.of(new Integer[] { id, input.size(), howManyTimes })));
+
+            for (int j = 0; j < howManyTimes; j++) {
+              input.add(id.toString());
+            }
+            id++;
+            continue;
+          }
+          howManyTimes = Integer.parseInt(Character.toString(line.charAt(i)));
+          for (int j = 0; j < howManyTimes; j++) {
+            input.add(".");
+          }
+        }
+        line = br.readLine();
+      }
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+
+    System.out.println(chunks.toString());
+
+    // TODO: Move values to the left where they fit
+    // as a whole
+    List<List<Integer>> finalChunks = new ArrayList<>();
+
+    for (List<Integer> rightChunkInfo : chunks.reversed()) {
+      Integer rightChunkLength = rightChunkInfo.get(2);
+      // TODO: Check where fits, move there
+      for (int i = 0; i < rightChunkInfo.get(1) && i < chunks.size() - 1; i++) {
+        List<Integer> firstLeftChunkInfo = chunks.get(i);
+        Integer firstIndexPlusLength = firstLeftChunkInfo.get(1) + firstLeftChunkInfo.get(2);
+
+        List<Integer> secondLeftChunkInfo = chunks.get(i + 1);
+        Integer secondIndex = secondLeftChunkInfo.get(1);
+
+        if (Math.abs(secondIndex - firstIndexPlusLength) < rightChunkLength)
+          continue;
+
+        // TODO: change index of right chunk
+        firstLeftChunkInfo.set(2, firstIndexPlusLength + rightChunkLength);
+        rightChunkInfo.set(1, firstIndexPlusLength + 1);
+        // TODO: Sort list by chunk's index
+        // chunks.sort((a, b) -> a.get(1).compareTo(b.get(1)));
+        // actually, add to final chunks
+        finalChunks.add(firstLeftChunkInfo);
+        finalChunks.add(rightChunkInfo);
+        finalChunks.add(secondLeftChunkInfo);
+      }
+    }
+
+    System.out.println(finalChunks.toString());
+
+    // System.out.println(input.toString());
+    return checksum(input);
   }
 }
