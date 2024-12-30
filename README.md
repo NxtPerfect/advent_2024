@@ -18,4 +18,4 @@ Java 23
 | 8 | No | No |
 | 9 | Yes | No |
 | 10 | No | No |
-| 11 | Yes | No |
+| 11 | Yes | Yes |

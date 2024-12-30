@@ -18,8 +18,6 @@ class Solution extends Day {
     int resultPart1 = part1("dayXX/input.txt");
     System.out.println(resultPart1);
 
-
-
     int properResultPart2 = 0; // TODO: change to part 2 sample data result
     int validationResultPart2 = part2("dayXX/test_input.txt");
     System.out.println(validationResultPart2);
@@ -43,12 +41,14 @@ class Solution extends Day {
       System.out.println(e);
     }
 
+    System.out.println("Part 1: " + result);
     return result;
   }
 
   int part2(String inputFilePath) {
     int result = 0;
 
+    System.out.println("Part 2: " + result);
     return result;
   }
 }

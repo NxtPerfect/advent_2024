@@ -14,21 +14,18 @@ import lib.Day;
 
 class Solution extends Day {
   void main() {
-    // int properResultPart1 = 55312; // TODO: change to part 1 sample data result
-    // int validationResultPart1 = part1("day11/test_input2.txt");
-    // System.out.println(validationResultPart1);
-    // System.out.println(validationResultPart1 == properResultPart1);
-    //
-    // int resultPart1 = part1("day11/input.txt");
-    // System.out.println(resultPart1);
-    //
-    Long resultPart2 = part2("day11/input.txt");
+    int properResultPart1 = 55312; // TODO: change to part 1 sample data result
+    int validationResultPart1 = part1("day11/test_input2.txt");
+    System.out.println(validationResultPart1);
+    System.out.println(validationResultPart1 == properResultPart1);
+
+    int resultPart1 = part1("day11/input.txt");
+    System.out.println(resultPart1);
+
+    long resultPart2 = part2("day11/input.txt");
     System.out.println(resultPart2);
   }
 
-  // If stone == 0 then stone = 1
-  // if stone.length() % 2 == 0 then stone.split(middle)
-  // else stone *= 2024
   int part1(String inputFilePath) {
     List<Long> stones = new ArrayList<>();
 
@@ -44,8 +41,6 @@ class Solution extends Day {
     } catch (Exception e) {
       System.out.println(e);
     }
-
-    // System.out.println(stones.toString());
 
     for (int i = 0; i < 25; i++) {
       List<Long> newStones = new ArrayList<>();
@@ -73,7 +68,11 @@ class Solution extends Day {
     return stones.size();
   }
 
-  Long part2(String inputFilePath) {
+  /*
+   * Solution inspired by
+   * https://youtu.be/WJ48BFHAtPY
+   */
+  long part2(String inputFilePath) {
     Long result = 0l;
     List<Long> stones = new ArrayList<>();
 
@@ -90,62 +89,48 @@ class Solution extends Day {
       System.out.println(e);
     }
 
-    // System.out.println(stones.toString());
+    // key = number
+    // val = map -> key = blink amount, val = result
+    Map<Long, Map<Integer, Long>> cache = new HashMap<>();
 
-    // Iterate each stone 75 times
-    // then add to result
-    // do same for temp stones
-    // so probably anytime i add to it
-    // i should just let it wait
-    // and focus on first stone
-    // in temp stones
-    Map<Long, Long[]> cache = new HashMap<>();
-
-    for (int i = 0; i < stones.size(); i++) {
-      Long stone = stones.get(i);
-      System.out.println("Stone " + i + " out of " + stones.size());
-      // List<Long> tempStones = new ArrayList<>(List.of(stone));
-
-      for (int k = 0; k < 75; k++) {
-        // for (int j = 0; j < tempStones.size(); j++)
-        // stone = tempStones.get(j);
-        if (cache.get(stone) != null) {
-          // tempStones.set(j, cache.get(stone)[0]);
-          if (cache.get(stone).length == 2) {
-            // tempStones.add(cache.get(stone)[1]);
-            stones.add(cache.get(stone)[1]);
-          }
-          stone = cache.get(stone)[0];
-          continue;
-        }
-        if (stone.equals(0l)) {
-          // tempStones.set(j, 1l);
-          cache.put(stone, new Long[] { 1l });
-          stone = 1l;
-          continue;
-        }
-        int length = (int) (Math.log10(stone) + 1);
-        if (length % 2 == 0) {
-          Long newLeftStone = Long.parseLong(stone.toString().substring(0, length / 2));
-          Long newRightStone = Long.parseLong(stone.toString().substring(length / 2));
-          // tempStones.set(j, newLeftStone);
-          // tempStones.add(newRightStone);
-          cache.put(stone, new Long[] { newLeftStone, newRightStone });
-          stone = newLeftStone;
-          continue;
-        }
-        // tempStones.set(j, stone * 2024);
-        cache.put(stone, new Long[] { stone * 2024 });
-        stone *= 2024l;
-      }
-      result++;
-      stones.removeFirst();
-      i--;
-      // System.out.println(cache.size());
-      // System.out.println(result);
+    for (Long stone : stones) {
+      result += blink2(cache, 75, stone);
     }
-    // result += tempStones.size();
 
+    return result;
+  }
+
+  private long blink2(Map<Long, Map<Integer, Long>> cache, int iterations, long stone) {
+    if (iterations == 0) {
+      return 1;
+    }
+
+    Map<Integer, Long> stoneCache = cache.get(stone);
+    if (stoneCache != null) {
+      Long res = stoneCache.get(iterations);
+      if (res != null) {
+        return res;
+      }
+    }
+
+    String stoneString = "" + stone;
+    long result = 0;
+    if (stone == 0l) {
+      result = blink2(cache, iterations - 1, 1l);
+    } else if (stoneString.length() % 2 == 0) {
+      int middlePoint = stoneString.length() / 2;
+      Long newLeftStone = Long.parseLong(stoneString.substring(0, middlePoint));
+      Long newRightStone = Long.parseLong(stoneString.substring(middlePoint));
+      result = blink2(cache, iterations - 1, newLeftStone) + blink2(cache, iterations - 1, newRightStone);
+    } else {
+      result = blink2(cache, iterations - 1, stone * 2024);
+    }
+
+    if (stoneCache == null) {
+      stoneCache = new HashMap<>();
+      cache.put(stone, stoneCache);
+    }
+    stoneCache.put(iterations, result);
     return result;
   }
 }
