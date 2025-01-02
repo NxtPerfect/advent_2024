@@ -19,3 +19,4 @@ Java 23
 | 9 | Yes | No |
 | 10 | No | No |
 | 11 | Yes | Yes |
+| 12 | No | No |
