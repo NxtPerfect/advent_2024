@@ -21,20 +21,19 @@ import lib.Pair;
 
 class Solution extends Day {
   void main() {
-    final int properResultPart1 = 1930;
+    // final int properResultPart1 = 1930;
     final List<String[]> testInput = readInputToStringList("day12/test_input.txt");
-    final int validationResultPart1 = part1(testInput);
-    System.out.println(validationResultPart1 == properResultPart1);
-
-    final List<String[]> input = readInputToStringList("day12/input.txt");
-    final int resultPart1 = part1(input);
-    System.out.println(resultPart1);
-
-    // int properResultPart2 = 0; // TODO: change to part 2 sample data result
-    // int validationResultPart2 = part2("day12/test_input.txt");
-    // System.out.println(validationResultPart2);
-    // System.out.println(validationResultPart2 == properResultPart2);
+    // final int validationResultPart1 = part1(testInput);
+    // System.out.println(validationResultPart1 == properResultPart1);
     //
+    // final List<String[]> input = readInputToStringList("day12/input.txt");
+    // final int resultPart1 = part1(input);
+    // System.out.println(resultPart1);
+    //
+    int properResultPart2 = 1206;
+    final int validationResultPart2 = part2(testInput);
+    System.out.println(validationResultPart2 == properResultPart2);
+
     // int resultPart2 = part2("day12/input.txt");
     // System.out.println(resultPart2);
   }
@@ -137,11 +136,83 @@ class Solution extends Day {
     return area * perimeter;
   }
 
-  @Override
-  protected int part2(final String inputFilePath) {
-    final int result = 0;
+  // Should be mostly what part 1 is
+  // but this time calculate how many sides each region has
+  // which is equal to amount of corners
+  // and use that instead of perimeter
+  int part2(final List<String[]> input) {
+    int result = 0;
+    final List<List<Pair<Integer, Integer>>> regions = new ArrayList<List<Pair<Integer, Integer>>>();
+    for (int i = 0; i < input.size(); i++) {
+      for (int j = 0; j < input.get(i).length; j++) {
+        List<Pair<Integer, Integer>> newRegion = new ArrayList<Pair<Integer, Integer>>();
+        newRegion = bfs(new LinkedList<Pair<Integer, Integer>>(List.of(new Pair<>(i, j))), input,
+            new ArrayList<Pair<Integer, Integer>>());
+
+        Collections.sort(newRegion, new Comparator<Pair<Integer, Integer>>() {
+          @Override
+          public int compare(Pair<Integer, Integer> arg0, Pair<Integer, Integer> arg1) {
+            if (arg0.getLeft().equals(arg1.getLeft()))
+              return arg0.getRight().compareTo(arg1.getRight());
+            return arg0.getLeft().compareTo(arg1.getLeft());
+          };
+        });
+
+        if (regions.contains(newRegion)) {
+          continue;
+        }
+        regions.add(newRegion);
+      }
+    }
+
+    // System.out.println(regions.toString());
+
+    System.out.println("Costs...");
+    for (final List<Pair<Integer, Integer>> region : regions) {
+      result += calculateCostOfRegionPart2(region);
+    }
 
     System.out.println("Part 2: " + result);
     return result;
+  }
+
+  int calculateCostOfRegionPart2(final List<Pair<Integer, Integer>> region) {
+    final int area = region.size();
+    int sides = 0;
+    for (final Pair<Integer, Integer> pair : region) {
+      int cellSides = 0;
+      for (int i = -1; i <= 1; i++) {
+        cellSides = 0;
+        boolean nextSide = false;
+        for (int j = -1; j <= 1; j++) {
+          if (Math.abs(i) == Math.abs(j))
+            continue;
+          final Pair<Integer, Integer> neighbourCell = new Pair<>(pair.getLeft() + i, pair.getRight() + j);
+          final boolean hasNeighbour = region.contains(neighbourCell);
+          if (nextSide && hasNeighbour) {
+            cellSides = 3;
+            break;
+          }
+          cellSides += hasNeighbour ? 0 : 1;
+          nextSide = hasNeighbour;
+        }
+        if (nextSide && cellSides == 3)
+          break;
+      }
+      if (cellSides == 0) {
+        for (int i = -1; i <= 1; i++) {
+          for (int j = -1; j <= 1; j++) {
+            // corners
+            if (Math.abs(i) != Math.abs(j))
+              continue;
+            final Pair<Integer, Integer> neighbourCell = new Pair<>(pair.getLeft() + i, pair.getRight() + j);
+            final boolean hasNeighbour = region.contains(neighbourCell);
+            sides++;
+          }
+        }
+      }
+      sides += cellSides == 3 ? 1 : 0;
+    }
+    return area * sides;
   }
 }
