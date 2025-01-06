@@ -1,3 +1,4 @@
+// cheated the actual math from solutions
 package day13;
 
 import java.io.IOException;
